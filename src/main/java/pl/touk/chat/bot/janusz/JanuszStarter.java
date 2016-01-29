@@ -7,9 +7,11 @@ import org.h2.jdbcx.JdbcConnectionPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.touk.chat.bot.janusz.commands.Commands;
+import pl.touk.chat.bot.janusz.commands.JanuszCommand;
 import pl.touk.chat.bot.janusz.commands.bus.BusCommand;
 import pl.touk.chat.bot.janusz.commands.bus.TransitApi;
 import pl.touk.chat.bot.janusz.commands.cmdfucommand.CMDFuCommand;
+import pl.touk.chat.bot.janusz.commands.czyjest.CzyJestCommand;
 import pl.touk.chat.bot.janusz.commands.gif.GifCommand;
 import pl.touk.chat.bot.janusz.commands.stack.StackOverflowCommand;
 import pl.touk.chat.bot.janusz.commands.store.StoreCommand;
@@ -60,6 +62,7 @@ public class JanuszStarter {
         context.registerBean(BusCommand.class);
         context.registerBean(StoreCommand.class);
         context.registerBean(StackOverflowCommand.class);
+        context.registerBean(CzyJestCommand.class);
         context.registerBean(GifCommand.class);
         context.registerBean(CMDFuCommand.class);
         context.registerBean(createCommands(context));
@@ -79,11 +82,13 @@ public class JanuszStarter {
     }
 
     private Commands createCommands(InjectionContext context) {
-        return new Commands(ImmutableMap.of(
-                "bus", context.getBean(BusCommand.class),
-                "stack", context.getBean(StackOverflowCommand.class),
-                "gif", context.getBean(GifCommand.class),
-                "cmdfu", context.getBean(CMDFuCommand.class),
-                "store", context.getBean(StoreCommand.class)));
+        return new Commands(ImmutableMap.<String, JanuszCommand>builder()
+                .put("bus", context.getBean(BusCommand.class))
+                .put("stack", context.getBean(StackOverflowCommand.class))
+                .put("czyjest", context.getBean(CzyJestCommand.class))
+                .put("gif", context.getBean(GifCommand.class))
+                .put("cmdfu", context.getBean(CMDFuCommand.class))
+                .put("store", context.getBean(StoreCommand.class))
+                .build());
     }
 }
