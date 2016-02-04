@@ -3,20 +3,18 @@ package pl.touk.chat.bot.janusz.commands.czyjest;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.apachecommons.CommonsLog;
 import pl.touk.chat.bot.janusz.commands.JanuszCommand;
 
 import java.util.Arrays;
 import java.util.List;
 
+@CommonsLog
 public class CzyJestCommand implements JanuszCommand {
 
-    public static final String CZYJEST_API_PATH = "http://czyjestkuba.touk.pl/api/";
-    public static final String ERROR_MESSAGE = "nie wiem";
     private static final List<String> AVAILABLE_NICKNAMES = Arrays.asList("kuba");
-
-    Logger log = LoggerFactory.getLogger(CzyJestCommand.class);
+    static final String CZYJEST_API_PATH = "http://czyjestkuba.touk.pl/api/";
+    static final String ERROR_MESSAGE = "nie wiem";
 
     @Override
     public String invoke(String sender, List<String> args) {
@@ -36,8 +34,7 @@ public class CzyJestCommand implements JanuszCommand {
             try {
                 return czyJest(arg);
             } catch (UnirestException e) {
-                log.error("Ups something gone wrong {}", e.getMessage());
-                e.printStackTrace();
+                log.error("Ups something gone wrong", e);
                 throw e;
             }
         }
@@ -49,7 +46,7 @@ public class CzyJestCommand implements JanuszCommand {
 
         log.info("Asking for czy jest");
         String response = request.asString().getBody().trim();
-        log.info("Stack response: {}", response);
+        log.info("Czyjest service response: " + response);
 
         switch (Integer.valueOf(response)) {
             case 3 :
